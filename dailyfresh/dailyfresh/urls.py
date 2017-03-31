@@ -22,3 +22,5 @@ urlpatterns = [
     url(r'^hero/', include('hero.urls')),
     url(r'^fixbug')
 xfeibu]
+aaaa
+]
