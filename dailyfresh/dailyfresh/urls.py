@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^/', include('book.urls')),
     url(r'^hero/', include('hero.urls')),
     url(r'^fixbug')
+aaaa
 ]
