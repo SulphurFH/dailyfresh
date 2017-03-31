@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^/', include('book.urls')),
     url(r'^hero/', include('hero.urls')),
+    url(r'^fixbug')
 ]
