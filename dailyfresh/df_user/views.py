@@ -39,11 +39,9 @@ def user_handle(request):
     # 从request中获取POST提交信息
     post = request.POST
     uname = post['user_name']
-    print(uname)
     upwd = post['pwd']
     ucpwd = post['cpwd']
     uemail = post['email']
-    print(uemail)
 
     # 校验两次提交的密码是否一致
     if upwd != ucpwd:
@@ -107,6 +105,7 @@ def login_handle(request):
 
         # 验证通过,添加session信息
         request.session['uname'] = uname
+        request.session['userid'] = user[0].id
         # 用户关闭浏览器session失效
         request.session.set_expiry(0)
 
@@ -121,12 +120,14 @@ def user_center_info(request):
     """用户登录成功首页"""
 
     uname = request.session.get('uname')
+    print(uname)
+    print(request.session.get('userid'))
     if uname:
         user = UserInfo.objects.get(uname=uname)
         context = {'isLogin': True, 'title': '用户中心',
                    'uname': uname, 'ureceive_user': user.ureceive_user,
                    'uaddress': user.uaddress,
-                   'ureceive_phone': user.ureceive_phone}
+                   'ureceive_phone': user.ureceive_phone, 'page_name': 1}
         return render(request, 'df_user/user_center_info.html', context)
     else:
         return redirect('/user/login/')
@@ -152,7 +153,7 @@ def user_center_site(request):
                 '****' + user.ureceive_phone[-4:]
         context = {'isLogin': True, 'title': '用户中心',
                    'uname': uname, 'ureceive_phone': ureceive_phone,
-                   'user': user}
+                   'user': user, 'page_name': 1}
         return render(request, 'df_user/user_center_site.html', context)
     else:
         return redirect('/user/login/')
