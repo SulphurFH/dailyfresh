@@ -1,13 +1,21 @@
+
 # coding=utf-8
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import *
+from df_user.islogin import islogin
 
 # Create your views here.
 
 
 def index(request):
-    uname = request.session.get('uname')
+    """
+    index函数负责查询页面中需要展示的商品内容，
+    主要是每类最新的4种商品和3中点击率最高的商品，
+    每类商品需要查询2次
+    """
+
+    # 查询每类商品最新的4个和点击率最高的3个
     fruit = GoodsInfo.objects.filter(gtype__id=1).order_by("-id")[:4]
     fruit2 = GoodsInfo.objects.filter(gtype__id=1).order_by("-gclick")[:3]
     fish = GoodsInfo.objects.filter(gtype__id=2).order_by("-id")[:4]
@@ -20,38 +28,65 @@ def index(request):
     vegetables2 = GoodsInfo.objects.filter(gtype__id=5).order_by("-gclick")[:3]
     frozen = GoodsInfo.objects.filter(gtype__id=6).order_by("-id")[:4]
     frozen2 = GoodsInfo.objects.filter(gtype__id=6).order_by("-gclick")[:3]
-    context = {'title': '首页', 'uname': uname, 'fruit': fruit,
+    # 构造上下文
+    context = {'title': '首页', 'fruit': fruit,
                'fish': fish, 'meat': meat, 'egg': egg,
                'vegetables': vegetables, 'frozen': frozen,
                'fruit2': fruit2, 'fish2': fish2, 'meat2': meat2,
                'egg2': egg2, 'vegetables2': vegetables, 'frozen2': frozen,
                'guest_cart': 1}
-    if uname:
-        context['isLogin'] = True
-    else:
-        context['isLogin'] = False
+
+    # 返回渲染模板
     return render(request, 'df_goods/index.html', context)
 
 
 def detail(request, foodid):
+    """
+    detail函数负责展示商品详细页面，主要需要查询的地方有：
+    当前商品对象，当前商品对象类型，最新的2个商品对象。
+    以及每次请求本函数累加商品点击量。
+    """
+
+    # 获取当前商品，并将点击数+1
     good = GoodsInfo.objects.get(id=foodid)
     good.gclick += 1
     good.save()
+    # 查询最新的两个商品
     newgood = GoodsInfo.objects.all().order_by('-id')[:2]
+    # 查询当前商品的类型
     goodtype = TypeInfo.objects.get(goodsinfo__id=foodid)
-    uname = request.session.get('uname')
-    context = {'title': '商品详情', 'uname': uname,
-               'good': good, 'guest_cart': 1,
+    # 构造上下文
+    context = {'title': '商品详情', 'good': good, 'guest_cart': 1,
                'newgood': newgood, 'isDetail': True, 'goodtype': goodtype}
-    if uname:
-        context['isLogin'] = True
+
+    # 返回渲染模板
+    response = render(request, 'df_goods/detail.html', context)
+
+    # 将点击的商品id存入cookie中
+    goods_ids = request.COOKIES.get('goods_ids')
+    if goods_ids != '':
+        goods_ids1 = goods_ids.split(',')
+        if goods_ids1.count(foodid) >= 1:
+            goods_ids1.remove(foodid)
+        goods_ids1.insert(0, foodid)
+        if len(goods_ids1) >= 6:
+            del goods_ids1[5]
+        goods_ids = ','.join(goods_ids1)
     else:
-        context['isLogin'] = False
-    return render(request, 'df_goods/detail.html', context)
+        good_ids = int(foodid)
+
+    response.set('goods_ids', good_ids)
+    # 返回response对象
+    return response
 
 
 def goodlist(request, typeid, selectid, pageid):
-    uname = request.session.get('uname')
+    """
+    goodlist函数负责展示某类商品的信息。
+    url中的参数依次代表
+    typeid:商品类型id;selectid:查询条件id，1为根据id查询，2位根据价格查询，3位根据点击量查询
+    """
+
     # 获取最新发布的商品
     newgood = GoodsInfo.objects.all().order_by('-id')[:2]
     # 根据条件查询所有商品
@@ -71,15 +106,11 @@ def goodlist(request, typeid, selectid, pageid):
     # 确定商品的类型
     goodtype = TypeInfo.objects.get(id=typeid)
     # 构造上下文
-    context = {'title': '商品详情', 'uname': uname,
+    context = {'title': '商品详情',
                'guest_cart': 1, 'goodtype': goodtype,
                'newgood': newgood, 'goodList': goodList,
                'typeid': typeid, 'selectid': selectid,
                'plist': plist, 'pageid': int(pageid)}
-    # 判断是否登录
-    if uname:
-        context['isLogin'] = True
-    else:
-        context['isLogin'] = False
+
     # 渲染返回结果
     return render(request, 'df_goods/list.html', context)

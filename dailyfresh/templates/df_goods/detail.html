@@ -3,22 +3,20 @@
 <script>
  function add(){
    num = parseInt($('.num_show').val());
-   if(num == {{good.gkucun}}){
-     $('.num_show').val({{good.gkucun}});
-   }
-   else{
-     $('.num_show').val(num+1);
-   }
+   /* if(num == {{good.gkucun}}){
+    *   $('.num_show').val({{good.gkucun}});
+    * }
+    * else{
+    *   $('.num_show').val(num+1);
+    * }*/
+   $('.num_show').val(num+1);
    $('.num_show').blur();
  }
 
  function minus(){
    num = parseInt($('.num_show').val());
-   if(num >= 1){
+   if(num > 1){
      $('.num_show').val(num-1);
-   }
-   else{
-     $('.num_show').val(0); 
    }
    $('.num_show').blur();
  }
@@ -28,6 +26,7 @@
      num = parseInt($('.num_show').val());
      price = parseFloat($('#gprice').text());
      total = num*price
+     $('.num_show').val(num)
      $('#gtotal').text(total.toFixed(2)+'元');
    });
  });

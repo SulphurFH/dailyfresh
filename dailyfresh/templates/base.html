@@ -4,9 +4,9 @@
       <div class="header">
 	<div class="welcome fl">欢迎来到天天生鲜!</div>
 	<div class="fr">
-          {% if isLogin %}
+          {% if request.session.uname|default:'' != '' %}
 	  <div class="login_info fl">
-	    欢迎您：<em>{{uname}}</em>
+	    欢迎您：<em>{{request.session.uname}}</em>
 	  </div>
           <div class="user_link fl">
 	    <span>|</span>
