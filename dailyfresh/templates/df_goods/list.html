@@ -1,4 +1,18 @@
 {% extends 'df_goods/base.html' %}
+{% block head %}
+<script>
+ $(function(){
+   $('.add_goods').click(function(){
+     counts = 1;
+     foodid = $(this)[0].dataset.id;
+     url = '/cart/addcart'+foodid+'&'+counts+'/';
+     $.get(url,function(data){
+       $('#show_count').text(data.count);
+     });
+   });
+ })
+</script>
+{% endblock head%}
 {% block list %}
 <div class="r_wrap fr clearfix">
   <div class="sort_bar">
@@ -15,7 +29,11 @@
       <div class="operate">
 	<span class="prize">￥{{item.gprice}}</span>
 	<span class="unit">{{item.gprice}}/{{item.gunit}}</span>
-	<a href="#" class="add_goods" title="加入购物车"></a>
+        {% if request.session.uname|default:'' != '' %}
+	<a href="javascript:;" class="add_goods" data-id="{{item.id}}" title="加入购物车"></a>
+        {% else %}
+        <a href="/user/login/" class="add_goods" data-id="{{item.id}}" title="加入购物车"></a>
+        {% endif %}
       </div>
     </li>
     {% endfor %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'df_user',
     'df_goods',
+    'df_cart',
     'tinymce',
 )
 
@@ -84,7 +85,7 @@ DATABASES = {
         'NAME': 'dailyfresh',
         'USER': 'root',
         'PASSWORD': 'mysql',
-        'HOST': '192.168.12.106',
+        'HOST': '192.168.12.30',
         'PORT': '3306',
     }
 }

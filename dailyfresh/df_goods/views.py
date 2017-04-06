@@ -3,8 +3,9 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import *
+from df_user.models import UserView
 from df_user.islogin import islogin
-
+from df_cart.models import CartInfo
 # Create your views here.
 
 
@@ -28,8 +29,10 @@ def index(request):
     vegetables2 = GoodsInfo.objects.filter(gtype__id=5).order_by("-gclick")[:3]
     frozen = GoodsInfo.objects.filter(gtype__id=6).order_by("-id")[:4]
     frozen2 = GoodsInfo.objects.filter(gtype__id=6).order_by("-gclick")[:3]
+    count = CartInfo.objects.filter(
+        user_id=request.session.get('userid')).count()
     # 构造上下文
-    context = {'title': '首页', 'fruit': fruit,
+    context = {'title': '首页', 'fruit': fruit, 'count': count,
                'fish': fish, 'meat': meat, 'egg': egg,
                'vegetables': vegetables, 'frozen': frozen,
                'fruit2': fruit2, 'fish2': fish2, 'meat2': meat2,
@@ -55,29 +58,53 @@ def detail(request, foodid):
     newgood = GoodsInfo.objects.all().order_by('-id')[:2]
     # 查询当前商品的类型
     goodtype = TypeInfo.objects.get(goodsinfo__id=foodid)
+
+    count = CartInfo.objects.filter(
+        user_id=request.session.get('userid')).count()
     # 构造上下文
-    context = {'title': '商品详情', 'good': good, 'guest_cart': 1,
+    context = {'title': '商品详情', 'good': good, 'guest_cart': 1, 'count': count,
                'newgood': newgood, 'isDetail': True, 'goodtype': goodtype}
 
+    # 查询用户id、用户浏览商品总数、用户目前在浏览的商品
+    userid = request.session.get('userid')
+    if userid:
+        countView = UserView.objects.filter(uid__id=userid).count()
+        view = UserView.objects.filter(uid__id=userid, gid__id=foodid)
+
+        # 判断是否有重复数据
+        if len(view) != 0:
+            view.delete()
+        view = UserView()
+        view.uid_id = userid
+        view.gid_id = foodid
+        view.save()
+
+        # 判读用户浏览商品是否超过总数显示
+        if countView >= 10:
+            UserView.objects.filter(uid__id=userid).order_by('id')[0].delete()
+
     # 返回渲染模板
-    response = render(request, 'df_goods/detail.html', context)
+    return render(request, 'df_goods/detail.html', context)
 
-    # 将点击的商品id存入cookie中
-    goods_ids = request.COOKIES.get('goods_ids')
-    if goods_ids != '':
-        goods_ids1 = goods_ids.split(',')
-        if goods_ids1.count(foodid) >= 1:
-            goods_ids1.remove(foodid)
-        goods_ids1.insert(0, foodid)
-        if len(goods_ids1) >= 6:
-            del goods_ids1[5]
-        goods_ids = ','.join(goods_ids1)
-    else:
-        good_ids = int(foodid)
+    # # 返回渲染模板
+    # response = render(request, 'df_goods/detail.html', context)
 
-    response.set('goods_ids', good_ids)
-    # 返回response对象
-    return response
+    # # 将点击的商品id存入cookie中
+    # goods_ids = request.COOKIES.get('goods_ids')
+    # if goods_ids != '':
+    #     goods_ids1 = goods_ids.split(',')
+    #     if goods_ids1.count(foodid) >= 1:
+    #         goods_ids1.remove(foodid)
+    #     goods_ids1.insert(0, foodid)
+    #     if len(goods_ids1) >= 6:
+    #         del goods_ids1[5]
+    #     goods_ids = ','.join(goods_ids1)
+    # else:
+    #     good_ids = int(foodid)
+
+    # response.set('goods_ids', good_ids)
+    # # 返回response对象
+    # return response
 
 
 def goodlist(request, typeid, selectid, pageid):
@@ -105,8 +132,10 @@ def goodlist(request, typeid, selectid, pageid):
     plist = paginator.page_range
     # 确定商品的类型
     goodtype = TypeInfo.objects.get(id=typeid)
+    count = CartInfo.objects.filter(
+        user_id=request.session.get('userid')).count()
     # 构造上下文
-    context = {'title': '商品详情',
+    context = {'title': '商品详情', 'count': count,
                'guest_cart': 1, 'goodtype': goodtype,
                'newgood': newgood, 'goodList': goodList,
                'typeid': typeid, 'selectid': selectid,

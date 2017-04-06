@@ -1,4 +1,5 @@
 from django.db import models
+from df_goods.models import GoodsInfo
 
 # Create your models here.
 
@@ -11,3 +12,8 @@ class UserInfo(models.Model):
     uaddress = models.CharField(max_length=100, default='')
     postcode = models.CharField(max_length=6, default='')
     ureceive_phone = models.CharField(max_length=11, default='')
+
+
+class UserView(models.Model):
+    uid = models.ForeignKey(UserInfo)
+    gid = models.ForeignKey(GoodsInfo)

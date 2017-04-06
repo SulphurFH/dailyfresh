@@ -1,50 +1,40 @@
-{% extends 'base.html' %}
-{% block body %}
-	<div class="main_con clearfix">
-		<div class="left_menu_con clearfix">
-			<h3>用户中心</h3>
-			<ul>
-				<li><a href="/user/user_center_info/">· 个人信息</a></li>
-				<li><a href="user_center_order.html">· 全部订单</a></li>
-				<li><a href="/user/user_center_site/" class="active">· 收货地址</a></li>
-			</ul>
-		</div>
-		<div class="right_content clearfix">
-				<h3 class="common_title2">收货地址</h3>
-				<div class="site_con">
-					<dl>
-						<dt>收件人：</dt>
-						<dd>{{user.ureceive_user}}</dd>
-                                                <dt>当前地址：</dt>
-                                                <dd>{{user.uaddress}}</dd>
-                                                <dt>联系方式：</dt>
-                                                <dd>{{ureceive_phone}}</dd>
-					</dl>					
-				</div>
-				<h3 class="common_title2">编辑地址</h3>
-				<div class="site_con">
-				  <form action="/user/user_center_site/" method="POST">
-                                    {% csrf_token %}
-						<div class="form_group">
-							<label>收件人：</label>
-							<input type="text" name="ureceive_user" value="{{user.ureceive_user}}">
-						</div>
-						<div class="form_group form_group2">
-							<label>详细地址：</label>
-							<textarea class="site_area" name="uaddress">{{user.uaddress}}</textarea>
-						</div>
-						<div class="form_group">
-							<label>邮编：</label>
-							<input type="text" name="postcode" value="{{user.postcode}}">
-						</div>
-						<div class="form_group">
-							<label>手机：</label>
-							<input type="text" name="ureceive_phone" value="{{user.ureceive_phone}}">
-						</div>
+{% extends 'df_user/base.html' %}
+{% block right_content %}
+<div class="right_content clearfix">
+  <h3 class="common_title2">收货地址</h3>
+  <div class="site_con">
+    <dl>
+      <dt>收件人：</dt>
+      <dd>{{user.ureceive_user}}</dd>
+      <dt>当前地址：</dt>
+      <dd>{{user.uaddress}}</dd>
+      <dt>联系方式：</dt>
+      <dd>{{ureceive_phone}}</dd>
+    </dl>					
+  </div>
+  <h3 class="common_title2">编辑地址</h3>
+  <div class="site_con">
+    <form action="/user/user_center_site/" method="POST">
+      {% csrf_token %}
+      <div class="form_group">
+	<label>收件人：</label>
+	<input type="text" name="ureceive_user" value="{{user.ureceive_user}}">
+      </div>
+      <div class="form_group form_group2">
+	<label>详细地址：</label>
+	<textarea class="site_area" name="uaddress">{{user.uaddress}}</textarea>
+      </div>
+      <div class="form_group">
+	<label>邮编：</label>
+	<input type="text" name="postcode" value="{{user.postcode}}">
+      </div>
+      <div class="form_group">
+	<label>手机：</label>
+	<input type="text" name="ureceive_phone" value="{{user.ureceive_phone}}">
+      </div>
 
-						<input type="submit" name="" value="提交" class="info_submit">
-					</form>
-				</div>
-		</div>
-	</div>
-{% endblock body %}
+      <input type="submit" name="" value="提交" class="info_submit">
+    </form>
+  </div>
+</div>
+{% endblock right_content %}

@@ -162,17 +162,23 @@ def user_center_info(request):
     # 判断用户是否登录，并传入上下文
     user = UserInfo.objects.get(uname=request.session.get('uname'))
 
+    # 查询用户最近浏览的前5个商品
+    goods = UserView.objects.filter(
+        uid__id=request.session.get('userid')).order_by('-id')[:5]
     goodlist = []
-    goods_ids = request.COOKIES.get('goods_ids', '')
-    goods_ids1 = goods_ids.split(',')
-    if goods_ids1 != ['']:
-        for goodid in goods_ids1:
-            goodlist.append(GoodsInfo.objects.get(id=int(goodid)))
-    context = {'isLogin': True, 'title': '用户中心',
+    for good in goods:
+        goodlist.append(GoodsInfo.objects.get(id=good.gid_id))
+
+    # goodlist = []
+    # goods_ids = request.COOKIES.get('goods_ids', '')
+    # goods_ids1 = goods_ids.split(',')
+    # if goods_ids1 != ['']:
+    #     for goodid in goods_ids1:
+    #         goodlist.append(GoodsInfo.objects.get(id=int(goodid)))
+    context = {'title': '个人信息', 'info': 1,
                'ureceive_user': user.ureceive_user,
-               'uaddress': user.uaddress,
-               'ureceive_phone': user.ureceive_phone, 'page_name': 1,
-               'goodlist': goodlist}
+               'uaddress': user.uaddress, 'goodlist': goodlist,
+               'ureceive_phone': user.ureceive_phone, 'page_name': 1}
     return render(request, 'df_user/user_center_info.html', context)
 
 
@@ -184,7 +190,6 @@ def user_center_site(request):
     """
 
     # 判断用户是否登录，并传入上下文
-    # if uname:
     user = UserInfo.objects.get(uname=request.session.get('uname'))
 
     # 获取用户输入POST信息
@@ -204,7 +209,14 @@ def user_center_site(request):
             '****' + user.ureceive_phone[-4:]
 
     # 构造上下文
-    context = {'title': '用户中心',
+    context = {'title': '收货地址', 'site': 1,
                'ureceive_phone': ureceive_phone,
                'user': user, 'page_name': 1}
     return render(request, 'df_user/user_center_site.html', context)
+
+
+@islogin
+def user_center_order(request):
+    context = {'page_name': 1, 'title': '全部订单',
+               'order': 1}
+    return render(request, 'df_user/user_center_order.html', context)

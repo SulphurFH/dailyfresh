@@ -3,12 +3,6 @@
 <script>
  function add(){
    num = parseInt($('.num_show').val());
-   /* if(num == {{good.gkucun}}){
-    *   $('.num_show').val({{good.gkucun}});
-    * }
-    * else{
-    *   $('.num_show').val(num+1);
-    * }*/
    $('.num_show').val(num+1);
    $('.num_show').blur();
  }
@@ -21,6 +15,8 @@
    $('.num_show').blur();
  }
 
+ 
+
  $(function(){
    $('.num_show').blur(function(){
      num = parseInt($('.num_show').val());
@@ -29,6 +25,16 @@
      $('.num_show').val(num)
      $('#gtotal').text(total.toFixed(2)+'元');
    });
+
+   $('#add_cart').click(function(){
+     counts = $('.num_show').val();
+     foodid = {{good.id}};
+     url = '/cart/addcart'+foodid+'&'+counts+'/';
+     $.get(url,function(data){
+       $('#show_count').text(data.count);
+     });
+   });
+   
  });
 </script>
 {% endblock %}
@@ -52,8 +58,12 @@
     </div>
     <div class="total">总价：<em id="gtotal">{{good.gprice}}元</em></div>
     <div class="operate_btn">
-      <a href="javascript:;" class="buy_btn">立即购买</a>
+      <a href="/cart/addcart{{good.id}}&1/" class="buy_btn">立即购买</a>
+      {% if request.session.uname|default:'' != '' %}
       <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+      {% else %}
+      <a href="/user/login/" class="add_cart" id="add_cart">加入购物车</a>
+      {% endif %}
     </div>
   </div>
 </div>
