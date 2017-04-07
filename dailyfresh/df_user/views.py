@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from df_goods.models import GoodsInfo
+from df_order.models import OrderInfo
 from hashlib import sha1
 from django.http import JsonResponse, HttpResponseRedirect
 from .islogin import islogin
@@ -217,6 +218,11 @@ def user_center_site(request):
 
 @islogin
 def user_center_order(request):
+
+    uid = request.session.get('userid')
+    # 订单信息
+    orderinfos = OrderInfo.objects.filter(user_id=uid)
+
     context = {'page_name': 1, 'title': '全部订单',
-               'order': 1}
+               'order': 1, 'orderinfos': orderinfos}
     return render(request, 'df_user/user_center_order.html', context)

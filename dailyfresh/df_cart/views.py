@@ -14,7 +14,7 @@ def cart(request):
     userid = request.session.get('userid')
     usercart = CartInfo.objects.filter(user_id=userid)
 
-    context = {'usercart': usercart, 'title': '我的购物车'}
+    context = {'usercart': usercart, 'title': '我的购物车', 'page_name': 1}
     return render(request, 'df_cart/cart.html', context)
 
 

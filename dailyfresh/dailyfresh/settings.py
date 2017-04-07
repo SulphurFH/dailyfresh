@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'df_user',
     'df_goods',
     'df_cart',
+    'df_order',
     'tinymce',
 )
 
@@ -85,7 +86,7 @@ DATABASES = {
         'NAME': 'dailyfresh',
         'USER': 'root',
         'PASSWORD': 'mysql',
-        'HOST': '192.168.12.30',
+        'HOST': '192.168.0.108',
         'PORT': '3306',
     }
 }
