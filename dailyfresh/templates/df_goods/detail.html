@@ -3,7 +3,9 @@
 <script>
  function add(){
    num = parseInt($('.num_show').val());
-   $('.num_show').val(num+1);
+   if(num < 99){
+     $('.num_show').val(num+1);
+   }
    $('.num_show').blur();
  }
 
@@ -19,6 +21,9 @@
 
  $(function(){
    $('.num_show').blur(function(){
+     if($(this).val() > 99){
+       $(this).val(99);
+     }
      num = parseInt($('.num_show').val());
      price = parseFloat($('#gprice').text());
      total = num*price

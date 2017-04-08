@@ -41,17 +41,17 @@
   
   <div class="pagenation">
     {% if goodList.has_previous %}
-    <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.previous_page_number}}"><上一页</a>
+    <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.previous_page_number}}/"><上一页</a>
       {% endif %}  
       {% for index in plist %}
       {% if pageid == index %}
-      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}" class="active">{{index}}</a>
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}/" class="active">{{index}}</a>
       {% else %}
-      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}">{{index}}</a>
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}/">{{index}}</a>
       {% endif %}
       {% endfor %}
       {% if goodList.has_next %}
-      <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.next_page_number}}">下一页></a>
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.next_page_number}}/">下一页></a>
       {% endif %}  
   </div>
 </div>

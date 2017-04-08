@@ -2,6 +2,7 @@
 {% block head %}
 <script>
  $(function(){
+   /* 计算价格小计与总计，并加上运费*/
    var priceTotal = 0
    var priceSum = 0
    $('.goods_list_td').each(function(){
@@ -16,7 +17,7 @@
    totalPay = priceSum + 10;
    $('#total_pay').text(totalPay+'元');
 
-
+   /* 下订单触发click事件，用来校验订单是否下成功，根据AJAX返回值展示不同页面*/
    $('#order_btn').click(function(){
      orderid = []
      $('.goods_list_td').each(function(){
@@ -42,7 +43,7 @@
           $('.popup_con').fadeIn('fast', function() {
             setTimeout(function(){
               $('.popup_con').fadeOut('fast',function(){
-	        window.location.href = '/user/user_center_order/';
+	        window.location.href = '/user/user_center_order&1/';
               });	
             },3000)  
           });
@@ -134,18 +135,4 @@
   
   <div class="mask"></div>
 </div>
-<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
-<script type="text/javascript">
- /* $('#order_btn').click(function() {
-
-  *   $('.popup_con').fadeIn('fast', function() {
-  *     setTimeout(function(){
-  *       $('.popup_con').fadeOut('fast',function(){
-    window.location.href = '/user/user_center_order/';
-  *       });	
-  *     },3000)  
-  *   });
-  *   
-  * });*/
-</script>
 {% endblock body %}
