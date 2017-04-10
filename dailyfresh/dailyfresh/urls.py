@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from df_goods import search_views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -23,4 +24,5 @@ urlpatterns = [
     url(r'^', include('df_goods.urls', namespace='goods')),
     url(r'^order/', include('df_order.urls', namespace='order')),
     url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^search/', search_views.MySeachView(), name='haystack_search'),
 ]

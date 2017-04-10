@@ -12,6 +12,11 @@ class TypeInfo(models.Model):
         return self.ttitle.encode('utf-8')
 
 
+class GoodsInfoManager(models.Manager):
+    def get_queryset(self):
+        return super(GoodsInfoManager, self).get_queryset().filter(isDelete=False)
+
+
 class GoodsInfo(models.Model):
     gtitle = models.CharField(max_length=20)
     gpic = models.ImageField(upload_to='goods')
@@ -26,3 +31,5 @@ class GoodsInfo(models.Model):
 
     def __str__(self):
         return self.gtitle.encode('utf-8')
+
+    objects = GoodsInfoManager()

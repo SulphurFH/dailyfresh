@@ -6,6 +6,8 @@ from .models import *
 from df_user.models import UserView
 from df_user.islogin import islogin
 from df_cart.models import CartInfo
+from haystack.views import SearchView
+
 # Create your views here.
 
 
@@ -135,7 +137,7 @@ def goodlist(request, typeid, selectid, pageid):
     count = CartInfo.objects.filter(
         user_id=request.session.get('userid')).count()
     # 构造上下文
-    context = {'title': '商品详情', 'count': count,
+    context = {'title': '商品详情', 'count': count, 'list': 1,
                'guest_cart': 1, 'goodtype': goodtype,
                'newgood': newgood, 'goodList': goodList,
                'typeid': typeid, 'selectid': selectid,
