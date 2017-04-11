@@ -19,13 +19,10 @@ from df_goods import search_views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-<<<<<<< HEAD
     url(r'^user/', include('df_user.urls', namespace='user')),
     url(r'^cart/', include('df_cart.urls', namespace='cart')),
     url(r'^', include('df_goods.urls', namespace='goods')),
     url(r'^order/', include('df_order.urls', namespace='order')),
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^search/', search_views.MySeachView(), name='haystack_search'),
-=======
->>>>>>> 642be5f8a44a62264e01c1cef0c38e2df7ef1abc
 ]
