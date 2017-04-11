@@ -1,0 +1,91 @@
+{% extends 'df_goods/base.html' %}
+{% block head %}
+<script>
+ function add(){
+   num = parseInt($('.num_show').val());
+   if(num < 99){
+     $('.num_show').val(num+1);
+   }
+   $('.num_show').blur();
+ }
+
+ function minus(){
+   num = parseInt($('.num_show').val());
+   if(num > 1){
+     $('.num_show').val(num-1);
+   }
+   $('.num_show').blur();
+ }
+
+ 
+
+ $(function(){
+   $('.num_show').blur(function(){
+     if($(this).val() > 99){
+       $(this).val(99);
+     }
+     num = parseInt($('.num_show').val());
+     price = parseFloat($('#gprice').text());
+     total = num*price
+     $('.num_show').val(num)
+     $('#gtotal').text(total.toFixed(2)+'元');
+   });
+
+   $('#add_cart').click(function(){
+     counts = $('.num_show').val();
+     foodid = {{good.id}};
+     url = '/cart/addcart'+foodid+'&'+counts+'/';
+     $.get(url,function(data){
+       $('#show_count').text(data.count);
+     });
+   });
+   
+ });
+</script>
+{% endblock %}
+{% block detail %}
+<div class="goods_detail_con clearfix">
+  <div class="goods_detail_pic fl"><img src="/static/{{good.gpic}}"></div>
+  <div class="goods_detail_list fr">
+    <h3>{{good.gtitle}}</h3>
+    <p>{{good.gjianjie}}</p>
+    <div class="prize_bar">
+      <span class="show_pirze">¥<em id="gprice">{{good.gprice}}</em></span>
+      <span class="show_unit">单  位：{{good.gunit}}</span>
+    </div>
+    <div class="goods_num clearfix">
+      <div class="num_name fl">数 量：</div>
+      <div class="num_add fl">
+	<input type="text" class="num_show fl" value="1">
+	<a href="javascript:add();" class="add fr">+</a>
+	<a href="javascript:minus();" class="minus fr">-</a>	
+      </div> 
+    </div>
+    <div class="total">总价：<em id="gtotal">{{good.gprice}}元</em></div>
+    <div class="operate_btn">
+      <a href="/cart/addcart{{good.id}}&1/" class="buy_btn">立即购买</a>
+      {% if request.session.uname|default:'' != '' %}
+      <a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+      {% else %}
+      <a href="/user/login/" class="add_cart" id="add_cart">加入购物车</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock detail %}
+
+{% block list %}
+<div class="r_wrap fr clearfix">
+  <ul class="detail_tab clearfix">
+    <li class="active">商品介绍</li>
+    <li>评论</li>
+  </ul>
+
+  <div class="tab_content">
+    <dl>
+      <dt>商品详情：</dt>
+      <dd>{{good.gcontent|safe}}</dd>
+    </dl>
+  </div>
+</div>
+{% endblock list %}

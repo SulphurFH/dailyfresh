@@ -1,0 +1,58 @@
+{% extends 'df_goods/base.html' %}
+{% block head %}
+<script>
+ $(function(){
+   $('.add_goods').click(function(){
+     counts = 1;
+     foodid = $(this)[0].dataset.id;
+     url = '/cart/addcart'+foodid+'&'+counts+'/';
+     $.get(url,function(data){
+       $('#show_count').text(data.count);
+     });
+   });
+ })
+</script>
+{% endblock head%}
+{% block list %}
+<div class="r_wrap fr clearfix">
+  <div class="sort_bar">
+    <a href="/goodlist/{{typeid}}&1&1/" class="active">默认</a>
+    <a href="/goodlist/{{typeid}}&2&1/">价格</a>
+    <a href="/goodlist/{{typeid}}&3&1/">人气</a>
+  </div>
+  
+  <ul class="goods_type_list clearfix">
+    {% for item in goodList %}
+    <li>
+      <a href="/good{{item.id}}/"><img src="/static/{{item.gpic}}"></a>
+      <h4><a href="/good{{item.id}}/">{{item.gtitle}}</a></h4>
+      <div class="operate">
+	<span class="prize">￥{{item.gprice}}</span>
+	<span class="unit">{{item.gprice}}/{{item.gunit}}</span>
+        {% if request.session.uname|default:'' != '' %}
+	<a href="javascript:;" class="add_goods" data-id="{{item.id}}" title="加入购物车"></a>
+        {% else %}
+        <a href="/user/login/" class="add_goods" data-id="{{item.id}}" title="加入购物车"></a>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  
+  <div class="pagenation">
+    {% if goodList.has_previous %}
+    <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.previous_page_number}}/"><上一页</a>
+      {% endif %}  
+      {% for index in plist %}
+      {% if pageid == index %}
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}/" class="active">{{index}}</a>
+      {% else %}
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{index}}/">{{index}}</a>
+      {% endif %}
+      {% endfor %}
+      {% if goodList.has_next %}
+      <a href="/goodlist/{{typeid}}&{{selectid}}&{{goodList.next_page_number}}/">下一页></a>
+      {% endif %}  
+  </div>
+</div>
+{% endblock list %}
